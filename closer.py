@@ -5,13 +5,14 @@ from collectorsframe import CollectorsFrame
 from datetime import datetime
 from auth import User, login
 from functools import partial
-from tkinter.messagebox import showerror, showinfo
+from tkinter.messagebox import showerror
 from threading import Timer
 from os.path import exists
 import sqlite3
+import os
 
 
-DB_NAME = 'closures.db3'
+DB_NAME = os.path.expanduser(r'~\closures.db3')
 
 
 class App(Tk):

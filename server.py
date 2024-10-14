@@ -1,4 +1,6 @@
 import sqlite3
+import uvicorn
+import os
 from fastapi import FastAPI
 
 app = FastAPI()
@@ -11,7 +13,9 @@ def factory(cursor, row):
 
 @app.get('/closures')
 async def closures():
-    conn = sqlite3.connect('closures.db3')
+    conn = sqlite3.connect(os.path.expanduser(r'~\closures.db3'))
     conn.row_factory = factory
     cur = conn.execute('SELECT * FROM closures')
     return cur.fetchall() or {'empty': True}
+
+uvicorn.run(app)
