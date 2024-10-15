@@ -18,4 +18,4 @@ async def closures():
     cur = conn.execute('SELECT * FROM closures')
     return cur.fetchall() or {'empty': True}
 
-uvicorn.run(app)
+uvicorn.run(app, host='0.0.0.0', port=8000)
