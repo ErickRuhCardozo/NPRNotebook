@@ -1,5 +1,5 @@
-from auth import UserDecoder
-from json import load
+import json
+from auth import User, UserDecoder
 from functools import partial
 from tkinter import *
 from tkinter.ttk import *
@@ -16,7 +16,7 @@ class UsersFrame(Frame):
         self.btns = []
 
         with open('users.json', 'r') as f:
-            users = load(f, cls=UserDecoder)
+            users = json.load(f, cls=UserDecoder)
         
         for user in users:
             self.btns.append(
