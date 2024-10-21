@@ -1,8 +1,9 @@
-import re
 import requests
-import subprocess
 from tkinter import *
 from tkinter.ttk import *
+
+
+SERVERS = ['desktop-s9rdtak', 'desktop-c0jr8d3', 'localhost']
 
 
 class App(Tk):
@@ -12,12 +13,16 @@ class App(Tk):
         self.geometry('400x450')
         self.notebook = Notebook(self)
         self.notebook.pack(fill=BOTH, expand=True, padx=5, pady=5)
-        session = requests.Session()
-        ips = App.get_ips()
+        self.after(1000, self.load_closures)
+        self.mainloop()
+    
 
-        for ip in ips:
+    def load_closures(self):
+        session = requests.Session()
+
+        for server in SERVERS:
             try:
-                res = session.get(f'http://{ip}:8000/closures', timeout=1)
+                res = session.get(f'http://{server}:8000/closures', timeout=0.5)
             except Exception:
                 continue
 
@@ -25,16 +30,13 @@ class App(Tk):
                 continue
 
             records = res.json()
-            self.setup_tree(ip, records)
-
-
-        self.mainloop()
+            self.setup_tree(server, records)
 
     
-    def setup_tree(self, ip, records):
+    def setup_tree(self, server, records):
         frame = Frame(self.notebook)
         frame.pack(fill=BOTH, expand=True)
-        self.notebook.add(frame, text=ip)
+        self.notebook.add(frame, text=server)
         treeview = Treeview(frame, columns=('user', 'total', 'date', 'collector'), show='headings')
         treeview.heading('user', text='Usuário')
         treeview.heading('total', text='Total')
@@ -50,14 +52,6 @@ class App(Tk):
 
         treeview.pack(fill=BOTH, expand=True)
 
-    
-
-    @staticmethod
-    def get_ips():
-        pattern = re.compile(r'\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}')
-        output = subprocess.check_output(('arp', '-a'))
-        return pattern.findall(output.decode('iso-8859-1'))
-    
 
 if __name__ == '__main__':
     App()
